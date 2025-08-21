@@ -143,7 +143,7 @@ impl EnhancedVulnerabilityDetector {
                 "pragma solidity ^0.8".to_string(),
             ],
             recommendation: "Use SafeMath library, Solidity 0.8+ built-in checks, or explicit bounds checking".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 90,
         });
 
@@ -157,7 +157,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"pragma solidity".to_string()],
             exclusions: vec![],
             recommendation: "Use the latest stable Solidity compiler version".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-102".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 100,
         });
 
@@ -171,7 +171,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"pragma solidity\s*[\^~><=]".to_string()],
             exclusions: vec![],
             recommendation: "Lock pragma to specific compiler version or narrow range".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-103".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 95,
         });
 
@@ -189,7 +189,7 @@ impl EnhancedVulnerabilityDetector {
             ],
             exclusions: vec!["require(".to_string(), "assert(".to_string(), "if(".to_string()],
             recommendation: "Check return value of low-level calls and handle failures appropriately".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-104".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 85,
         });
 
@@ -211,7 +211,7 @@ impl EnhancedVulnerabilityDetector {
                 "modifier".to_string(),
             ],
             recommendation: "Add proper access control to withdrawal functions".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-105".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 80,
         });
 
@@ -234,7 +234,7 @@ impl EnhancedVulnerabilityDetector {
                 "mutex".to_string(),
             ],
             recommendation: "Use ReentrancyGuard or follow Checks-Effects-Interactions pattern".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-107".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 85,
         });
 
@@ -252,7 +252,7 @@ impl EnhancedVulnerabilityDetector {
                 "internal".to_string(),
             ],
             recommendation: "Always specify state variable visibility explicitly".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-108".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 90,
         });
 
@@ -266,7 +266,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"storage\s+\w+;".to_string()],
             exclusions: vec!["=".to_string()],
             recommendation: "Initialize storage pointers explicitly or use memory/calldata".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-109".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 95,
         });
 
@@ -280,7 +280,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"assert\(".to_string()],
             exclusions: vec![],
             recommendation: "Use require() for user input validation, reserve assert() for internal errors".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-110".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 85,
         });
 
@@ -294,7 +294,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"tx\.origin".to_string()],
             exclusions: vec![],
             recommendation: "Use msg.sender instead of tx.origin for authorization".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 95,
         });
 
@@ -312,7 +312,7 @@ impl EnhancedVulnerabilityDetector {
             ],
             exclusions: vec![],
             recommendation: "Avoid using block timestamp for critical logic or use with appropriate tolerance".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-116".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 80,
         });
 
@@ -331,7 +331,7 @@ impl EnhancedVulnerabilityDetector {
             ],
             exclusions: vec![],
             recommendation: "Use commit-reveal schemes or external oracles for randomness".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-120".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 90,
         });
 
@@ -353,7 +353,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"for\s*\([^)]*\)[^{]*\{[^}]*\.call".to_string()],
             exclusions: vec![],
             recommendation: "Avoid external calls in loops or implement pull-over-push pattern".to_string(),
-            references: vec!["https://consensys.github.io/smart-contract-best-practices/attacks/denial-of-service/".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 95,
         });
 
@@ -367,7 +367,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![],
             exclusions: vec![],
             recommendation: "Pack variables smaller than 32 bytes together".to_string(),
-            references: vec!["https://docs.soliditylang.org/en/latest/internals/layout_in_storage.html".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 80,
         });
 
@@ -381,7 +381,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![],
             exclusions: vec![],
             recommendation: "Cache storage variables in memory when used multiple times".to_string(),
-            references: vec![],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 75,
         });
     }
@@ -397,7 +397,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![],
             exclusions: vec![],
             recommendation: "Emit events for all important state changes".to_string(),
-            references: vec![],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 70,
         });
 
@@ -411,7 +411,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![],
             exclusions: vec!["require(".to_string(), "assert(".to_string(), "revert(".to_string()],
             recommendation: "Validate all function parameters with require statements".to_string(),
-            references: vec![],
+            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
             confidence: 75,
         });
     }
@@ -552,6 +552,9 @@ impl EnhancedVulnerabilityDetector {
                 code_snippet: Some(function.body[..std::cmp::min(100, function.body.len())].to_string()),
                 recommendation: "Consider making this function external if it's not called internally".to_string(),
                 references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                swc_id: "SWC-100".to_string(),
+                impact: "Low".to_string(),
+                example: None,
             });
         }
 
@@ -599,7 +602,10 @@ impl EnhancedVulnerabilityDetector {
                     line_number: Some(function.line_start),
                     code_snippet: Some(function.body[..std::cmp::min(200, function.body.len())].to_string()),
                     recommendation: "Use ReentrancyGuard modifier or follow Checks-Effects-Interactions pattern".to_string(),
-                    references: vec!["https://swcregistry.io/docs/SWC-107".to_string()],
+                    references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                    swc_id: "SWC-107".to_string(),
+                    impact: if state_change_after_call { "Critical - attackers can manipulate contract state through recursive calls" } else { "High - external calls can be exploited for reentrancy attacks" }.to_string(),
+                    example: None,
                 });
             }
         }
@@ -640,7 +646,10 @@ impl EnhancedVulnerabilityDetector {
                 line_number: Some(function.line_start),
                 code_snippet: Some(function.body[..std::cmp::min(200, function.body.len())].to_string()),
                 recommendation: "Use SafeMath library or upgrade to Solidity 0.8+ for built-in overflow protection".to_string(),
-                references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
+                references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                swc_id: "SWC-101".to_string(),
+                impact: "Medium to High - arithmetic operations can overflow/underflow causing unexpected behavior".to_string(),
+                example: None,
             });
         }
 
@@ -673,7 +682,10 @@ impl EnhancedVulnerabilityDetector {
                             line_number: Some(function.line_start),
                             code_snippet: Some(line.to_string()),
                             recommendation: "Check the return value and handle call failures appropriately".to_string(),
-                            references: vec!["https://swcregistry.io/docs/SWC-104".to_string()],
+                            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                            swc_id: "SWC-104".to_string(),
+                            impact: "Medium - unchecked call return values can lead to silent failures".to_string(),
+                            example: None,
                         });
                     }
                 }
@@ -696,7 +708,10 @@ impl EnhancedVulnerabilityDetector {
                 line_number: Some(function.line_start),
                 code_snippet: Some(function.body[..std::cmp::min(200, function.body.len())].to_string()),
                 recommendation: "Use msg.sender instead of tx.origin for authorization checks".to_string(),
-                references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
+                references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                swc_id: "SWC-115".to_string(),
+                impact: "Medium - tx.origin can be spoofed in certain attack scenarios".to_string(),
+                example: None,
             });
         }
 
@@ -725,7 +740,10 @@ impl EnhancedVulnerabilityDetector {
                     line_number: Some(function.line_start),
                     code_snippet: Some(function.body[..std::cmp::min(200, function.body.len())].to_string()),
                     recommendation: "Avoid using block timestamp for critical logic or use with appropriate tolerance".to_string(),
-                    references: vec!["https://swcregistry.io/docs/SWC-116".to_string()],
+                    references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                    swc_id: "SWC-116".to_string(),
+                    impact: if is_critical { "High - block values can be manipulated by miners" } else { "Medium - block values are not reliable time sources" }.to_string(),
+                    example: None,
                 });
             }
         }
@@ -756,7 +774,10 @@ impl EnhancedVulnerabilityDetector {
                     line_number: Some(function.line_start),
                     code_snippet: Some(function.body[..std::cmp::min(200, function.body.len())].to_string()),
                     recommendation: "Use commit-reveal schemes, VRF, or external randomness oracles".to_string(),
-                    references: vec!["https://swcregistry.io/docs/SWC-120".to_string()],
+                    references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                    swc_id: "SWC-120".to_string(),
+                    impact: "High - predictable randomness can be exploited to manipulate outcomes".to_string(),
+                    example: None,
                 });
             }
         }
@@ -799,7 +820,10 @@ impl EnhancedVulnerabilityDetector {
                 line_number: Some(function.line_start),
                 code_snippet: Some(function.body[..std::cmp::min(200, function.body.len())].to_string()),
                 recommendation: "Add appropriate access control modifiers or require statements".to_string(),
-                references: vec!["https://swcregistry.io/docs/SWC-105".to_string()],
+                references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                swc_id: "SWC-105".to_string(),
+                impact: "Medium to High - unauthorized access to state-modifying functions".to_string(),
+                example: None,
             });
         }
 
@@ -819,7 +843,10 @@ impl EnhancedVulnerabilityDetector {
                 line_number: Some(function.line_start),
                 code_snippet: Some(function.body[..std::cmp::min(200, function.body.len())].to_string()),
                 recommendation: "Use require() for input validation and reserve assert() for internal errors".to_string(),
-                references: vec!["https://swcregistry.io/docs/SWC-110".to_string()],
+                references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                swc_id: "SWC-110".to_string(),
+                impact: "Medium - assert() failures consume all gas and can cause DoS".to_string(),
+                example: None,
             });
         }
 
@@ -842,7 +869,10 @@ impl EnhancedVulnerabilityDetector {
                     line_number: Some(variable.line_number),
                     code_snippet: Some(format!("{} {}", variable.var_type, variable.name)),
                     recommendation: "Explicitly specify visibility for all state variables".to_string(),
-                    references: vec!["https://swcregistry.io/docs/SWC-108".to_string()],
+                    references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                    swc_id: "SWC-108".to_string(),
+                    impact: "Low - implicit visibility can lead to misunderstanding of access controls".to_string(),
+                    example: None,
                 });
             }
         }
@@ -869,7 +899,10 @@ impl EnhancedVulnerabilityDetector {
                     line_number: Some(function.line_start),
                     code_snippet: Some(function.body[..std::cmp::min(100, function.body.len())].to_string()),
                     recommendation: "Emit events for important state changes to enable monitoring".to_string(),
-                    references: vec![],
+                    references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                    swc_id: "BP-001".to_string(),
+                    impact: "Low - lack of events reduces transparency and monitoring capabilities".to_string(),
+                    example: None,
                 });
             }
         }

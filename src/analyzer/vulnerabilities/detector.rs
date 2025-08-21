@@ -132,6 +132,9 @@ impl VulnerabilityDetector {
                         code_snippet: Some(function.body.clone()),
                         recommendation: "Use ReentrancyGuard or follow the Checks-Effects-Interactions pattern. Update state before making external calls.".to_string(),
                         references: vec!["https://swcregistry.io/docs/SWC-107".to_string()],
+                        swc_id: "SWC-107".to_string(),
+                        impact: if has_state_change_after { "Critical - attackers can manipulate contract state through recursive calls" } else { "High - external calls can be exploited for reentrancy attacks" }.to_string(),
+                        example: None,
                     });
                 }
             }
@@ -179,6 +182,9 @@ impl VulnerabilityDetector {
                     code_snippet: Some(function.body.clone()),
                     recommendation: "Use SafeMath library, Solidity 0.8+ built-in checks, or add explicit overflow checks with require() statements.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
+                    swc_id: "SWC-101".to_string(),
+                    impact: "High - arithmetic operations can overflow/underflow causing unexpected behavior or loss of funds".to_string(),
+                    example: None,
                 });
             }
             
@@ -198,6 +204,9 @@ impl VulnerabilityDetector {
                         code_snippet: Some(function.body.clone()),
                         recommendation: "Add bounds checking before increment/decrement operations.".to_string(),
                         references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
+                        swc_id: "SWC-101".to_string(),
+                        impact: "Medium - unchecked increment/decrement can lead to integer overflow/underflow".to_string(),
+                        example: None,
                     });
                 }
             }
