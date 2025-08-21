@@ -207,22 +207,69 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
-            if (function.body.contains(".call(") ||
+            let has_external_calls = function.body.contains(".call(") ||
+                function.body.contains(".call{") ||
                 function.body.contains(".send(") ||
-                function.body.contains(".delegatecall(")) &&
-               !function.body.contains("require(") &&
-               !function.body.contains("assert(") {
-                vulnerabilities.push(Vulnerability {
-                    id: "SWC-104".to_string(),
-                    title: "Unchecked Call Return Value".to_string(),
-                    description: format!("Unchecked return value in function '{}'", function.name),
-                    severity: "Medium".to_string(),
-                    category: "Security".to_string(),
-                    line_number: None,
-                    code_snippet: Some(function.body.clone()),
-                    recommendation: "Check the return value of external calls with require() or handle the failure case.".to_string(),
-                    references: vec!["https://swcregistry.io/docs/SWC-104".to_string()],
-                });
+                function.body.contains(".delegatecall(") ||
+                function.body.contains(".staticcall(");
+                
+            if has_external_calls {
+                let lines: Vec<&str> = function.body.lines().collect();
+                
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains(".call(") || line.contains(".send(") || line.contains(".delegatecall(") {
+                        // Check if return value is handled
+                        let has_return_check = line.contains("require(") ||
+                            line.contains("assert(") ||
+                            line.contains("(bool") ||
+                            line.contains("if(") ||
+                            line.contains("if (");
+                        
+                        // Check next few lines for return value handling
+                        let mut has_subsequent_check = false;
+                        for j in 1..=3 {
+                            if i + j < lines.len() {
+                                let next_line = lines[i + j];
+                                if next_line.contains("require(") || 
+                                   next_line.contains("assert(") ||
+                                   next_line.contains("success") {
+                                    has_subsequent_check = true;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if !has_return_check && !has_subsequent_check {
+                            let call_type = if line.contains(".call(") {
+                                "call"
+                            } else if line.contains(".send(") {
+                                "send"
+                            } else if line.contains(".delegatecall(") {
+                                "delegatecall"
+                            } else {
+                                "external call"
+                            };
+                            
+                            vulnerabilities.push(Vulnerability {
+                                id: "SWC-104".to_string(),
+                                title: "Unchecked Call Return Value".to_string(),
+                                description: format!(
+                                    "Function '{}' contains unchecked {} return value",
+                                    function.name, call_type
+                                ),
+                                severity: if call_type == "delegatecall" { "High".to_string() } else { "Medium".to_string() },
+                                category: "Security".to_string(),
+                                line_number: None,
+                                code_snippet: Some(line.to_string()),
+                                recommendation: format!(
+                                    "Check the return value of {} with require() or handle the failure case appropriately.",
+                                    call_type
+                                ),
+                                references: vec!["https://swcregistry.io/docs/SWC-104".to_string()],
+                            });
+                        }
+                    }
+                }
             }
         }
         
