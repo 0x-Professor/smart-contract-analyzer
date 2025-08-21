@@ -77,20 +77,60 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
+            let mut has_external_call = false;
+            let mut has_state_change_after = false;
+            
+            // Check for external calls
             if function.body.contains(".call(") ||
+               function.body.contains(".call{") ||
                function.body.contains(".send(") ||
-               function.body.contains(".transfer(") {
-                vulnerabilities.push(Vulnerability {
-                    id: "SWC-107".to_string(),
-                    title: "Reentrancy".to_string(),
-                    description: format!("Potential reentrancy vulnerability in function '{}'", function.name),
-                    severity: "High".to_string(),
-                    category: "Security".to_string(),
-                    line_number: None,
-                    code_snippet: Some(function.body.clone()),
-                    recommendation: "Follow the checks-effects-interactions pattern. Update state before making external calls.".to_string(),
-                    references: vec!["https://swcregistry.io/docs/SWC-107".to_string()],
-                });
+               function.body.contains(".transfer(") ||
+               function.body.contains(".delegatecall(") {
+                has_external_call = true;
+            }
+            
+            if has_external_call {
+                // Check for state changes after external calls (simple heuristic)
+                let lines: Vec<&str> = function.body.lines().collect();
+                let mut found_call = false;
+                
+                for line in &lines {
+                    if line.contains(".call(") || line.contains(".send(") || line.contains(".transfer(") {
+                        found_call = true;
+                    } else if found_call && (line.contains("=") || line.contains("++") || line.contains("--")) {
+                        has_state_change_after = true;
+                        break;
+                    }
+                }
+                
+                // Also check if function lacks reentrancy protection
+                let has_reentrancy_guard = function.modifiers.contains(&"nonReentrant".to_string()) ||
+                                         function.body.contains("nonReentrant") ||
+                                         contract.source_code.contains("ReentrancyGuard");
+                
+                if !has_reentrancy_guard {
+                    let severity = if has_state_change_after { "Critical" } else { "High" };
+                    
+                    vulnerabilities.push(Vulnerability {
+                        id: "SWC-107".to_string(),
+                        title: "Reentrancy".to_string(),
+                        description: format!(
+                            "Function '{}' contains external calls without reentrancy protection. {}",
+                            function.name,
+                            if has_state_change_after {
+                                "State changes occur after external calls."
+                            } else {
+                                "Consider adding reentrancy guards."
+                            }
+                        ),
+                        severity: severity.to_string(),
+                        category: "Security".to_string(),
+                        line_number: None,
+                        code_snippet: Some(function.body.clone()),
+                        recommendation: "Use ReentrancyGuard or follow the Checks-Effects-Interactions pattern. Update state before making external calls.".to_string(),
+                        references: vec!["https://swcregistry.io/docs/SWC-107".to_string()],
+                    });
+                }
             }
         }
         
