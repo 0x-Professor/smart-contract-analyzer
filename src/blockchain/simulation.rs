@@ -92,10 +92,11 @@ impl ContractSimulator {
         for (i, tx) in scenario.transactions.iter().enumerate() {
             let tx_result = self.simulate_transaction(tx).await?;
             gas_used_total += tx_result.gas_used;
+            let reverted = tx_result.reverted;
             results.push(tx_result);
 
             // Check if transaction was supposed to succeed
-            if tx_result.reverted && !scenario.assertions.iter().any(|a| matches!(a.assertion_type, AssertionType::TransactionReverts)) {
+            if reverted && !scenario.assertions.iter().any(|a| matches!(a.assertion_type, AssertionType::TransactionReverts)) {
                 return Ok(SimulationResult {
                     scenario_name: scenario.name.clone(),
                     success: false,
