@@ -311,9 +311,9 @@ impl EnhancedSolidityParser {
 
     fn extract_imports(&self, source_code: &str) -> Result<Vec<Import>> {
         let mut imports = Vec::new();
-        let lines: Vec<&str> = source_code.lines().enumerate().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
 
-        for (line_num, line) in lines {
+        for (line_num, line) in &lines_with_numbers {
             if let Some(captures) = self.import_regex.captures(line) {
                 let path = captures.get(1)
                     .or_else(|| captures.get(2))
