@@ -476,7 +476,7 @@ impl EnhancedVulnerabilityDetector {
                     line_number: Some(1),
                     code_snippet: Some(format!("pragma solidity {};", contract.pragma_version)),
                     recommendation: pattern.recommendation.clone(),
-                    references: pattern.references.clone(),
+                    references: pattern.references.clone(), swc_id: "SWC-100".to_string(), impact: "High".to_string(), example: None,
                 });
             }
         }
@@ -493,7 +493,7 @@ impl EnhancedVulnerabilityDetector {
                     line_number: Some(1),
                     code_snippet: Some(format!("pragma solidity {};", contract.pragma_version)),
                     recommendation: pattern.recommendation.clone(),
-                    references: pattern.references.clone(),
+                    references: pattern.references.clone(), swc_id: "SWC-100".to_string(), impact: "High".to_string(), example: None,
                 });
             }
         }

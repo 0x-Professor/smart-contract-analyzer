@@ -391,7 +391,7 @@ impl VulnerabilityDetector {
                 vulnerabilities.push(Vulnerability {
                     id: "SWC-116".to_string(),
                     title: "Block values as a proxy for time".to_string(),
-                    description, impact: "High".to_string(), swc_id: "SWC-100".to_string(), example: String::new(),
+                    description, impact: "High".to_string(), swc_id: "SWC-100".to_string(), example: None,
                     severity: severity.to_string(),
                     category: "Security".to_string(),
                     line_number: None,
@@ -467,7 +467,7 @@ impl VulnerabilityDetector {
                     vulnerabilities.push(Vulnerability {
                         id: "SWC-106".to_string(),
                         title: "Unprotected SELFDESTRUCT Instruction".to_string(),
-                        description, impact: "High".to_string(), swc_id: "SWC-100".to_string(), example: String::new(),
+                        description, impact: "High".to_string(), swc_id: "SWC-100".to_string(), example: None,
                         severity: severity.to_string(),
                         category: "Security".to_string(),
                         line_number: None,

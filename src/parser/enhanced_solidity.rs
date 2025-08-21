@@ -416,9 +416,9 @@ impl EnhancedSolidityParser {
                     visibility,
                     state_mutability,
                     modifiers,
-                    body,
+                    body: body.clone(),
                     line_start: line_start + 1,
-                    line_end: line_end + 1,
+                    line_end: line_end + 1, documentation: String::new(),
                     is_constructor: false,
                     is_fallback: false,
                     is_receive: false,
@@ -587,7 +587,7 @@ impl EnhancedSolidityParser {
                     StateMutability::NonPayable
                 };
 
-                let (body, line_start, line_end) = self.extract_function_body_with_lines(source_code, "constructor", *line_num)?;
+                let (body, line_start, line_end) = self.extract_function_body_with_lines(source_code, "constructor", line_num)?;
 
                 functions.push(EnhancedFunction {
                     name: "constructor".to_string(),
@@ -596,9 +596,9 @@ impl EnhancedSolidityParser {
                     visibility,
                     state_mutability,
                     modifiers: Vec::new(),
-                    body,
+                    body: body.clone(),
                     line_start: line_start + 1,
-                    line_end: line_end + 1,
+                    line_end: line_end + 1, documentation: String::new(),
                     is_constructor: true,
                     is_fallback: false,
                     is_receive: false,
@@ -618,7 +618,7 @@ impl EnhancedSolidityParser {
                     StateMutability::NonPayable
                 };
 
-                let (body, line_start, line_end) = self.extract_function_body_with_lines(source_code, "fallback", *line_num)?;
+                let (body, line_start, line_end) = self.extract_function_body_with_lines(source_code, "fallback", line_num)?;
 
                 functions.push(EnhancedFunction {
                     name: "fallback".to_string(),
@@ -627,9 +627,9 @@ impl EnhancedSolidityParser {
                     visibility: Visibility::External,
                     state_mutability,
                     modifiers: Vec::new(),
-                    body,
+                    body: body.clone(),
                     line_start: line_start + 1,
-                    line_end: line_end + 1,
+                    line_end: line_end + 1, documentation: String::new(),
                     is_constructor: false,
                     is_fallback: true,
                     is_receive: false,
@@ -643,7 +643,7 @@ impl EnhancedSolidityParser {
         // Receive functions
         for (line_num, line) in lines.iter().enumerate() {
             if let Some(_captures) = self.receive_regex.captures(line) {
-                let (body, line_start, line_end) = self.extract_function_body_with_lines(source_code, "receive", *line_num)?;
+                let (body, line_start, line_end) = self.extract_function_body_with_lines(source_code, "receive", line_num)?;
 
                 functions.push(EnhancedFunction {
                     name: "receive".to_string(),
@@ -652,9 +652,9 @@ impl EnhancedSolidityParser {
                     visibility: Visibility::External,
                     state_mutability: StateMutability::Payable,
                     modifiers: Vec::new(),
-                    body,
+                    body: body.clone(),
                     line_start: line_start + 1,
-                    line_end: line_end + 1,
+                    line_end: line_end + 1, documentation: String::new(),
                     is_constructor: false,
                     is_fallback: false,
                     is_receive: true,
@@ -820,7 +820,7 @@ impl EnhancedSolidityParser {
                 modifiers.push(ModifierDefinition {
                     name,
                     parameters,
-                    body,
+                    body: body.clone(),
                     line_number: line_num + 1,
                 });
             }
@@ -833,7 +833,7 @@ impl EnhancedSolidityParser {
         let mut structs = Vec::new();
         let lines: Vec<&str> = source_code.lines().collect();
 
-        for (line_num, _) in lines {
+        for (line_num, _) in lines.iter().enumerate() {
             if let Some(captures) = self.struct_regex.captures(source_code) {
                 let name = captures[1].to_string();
                 let fields_str = captures[2].to_string();
@@ -869,7 +869,7 @@ impl EnhancedSolidityParser {
         let mut enums = Vec::new();
         let lines: Vec<&str> = source_code.lines().collect();
 
-        for (line_num, _) in lines {
+        for (line_num, _) in lines.iter().enumerate() {
             if let Some(captures) = self.enum_regex.captures(source_code) {
                 let name = captures[1].to_string();
                 let values_str = captures[2].to_string();
