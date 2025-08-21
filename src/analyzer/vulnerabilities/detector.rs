@@ -279,18 +279,55 @@ impl VulnerabilityDetector {
     fn check_tx_origin_usage(&self, contract: &Contract) -> Vec<Vulnerability> {
         let mut vulnerabilities = Vec::new();
         
+        // Check global contract for tx.origin usage
         if contract.source_code.contains("tx.origin") {
-            vulnerabilities.push(Vulnerability {
-                id: "SWC-115".to_string(),
-                title: "Authorization through tx.origin".to_string(),
-                description: "Use of tx.origin for authorization is vulnerable to phishing attacks".to_string(),
-                severity: "Medium".to_string(),
-                category: "Security".to_string(),
-                line_number: None,
-                code_snippet: None,
-                recommendation: "Use msg.sender instead of tx.origin for authorization checks.".to_string(),
-                references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
-            });
+            // Find specific functions using tx.origin
+            for function in &contract.functions {
+                if function.body.contains("tx.origin") {
+                    let lines: Vec<&str> = function.body.lines().collect();
+                    
+                    for line in &lines {
+                        if line.contains("tx.origin") {
+                            let severity = if line.contains("require(") || line.contains("assert(") {
+                                "High"  // Used in authorization checks
+                            } else {
+                                "Medium"  // Used elsewhere
+                            };
+                            
+                            vulnerabilities.push(Vulnerability {
+                                id: "SWC-115".to_string(),
+                                title: "Authorization through tx.origin".to_string(),
+                                description: format!(
+                                    "Function '{}' uses tx.origin for authorization, which is vulnerable to phishing attacks",
+                                    function.name
+                                ),
+                                severity: severity.to_string(),
+                                category: "Security".to_string(),
+                                line_number: None,
+                                code_snippet: Some(line.to_string()),
+                                recommendation: "Use msg.sender instead of tx.origin for authorization checks. tx.origin can be manipulated in phishing attacks.".to_string(),
+                                references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
+                            });
+                            break; // Only report once per function
+                        }
+                    }
+                }
+            }
+            
+            // If no specific function found but contract contains tx.origin
+            if vulnerabilities.is_empty() {
+                vulnerabilities.push(Vulnerability {
+                    id: "SWC-115".to_string(),
+                    title: "Authorization through tx.origin".to_string(),
+                    description: "Contract uses tx.origin which is vulnerable to phishing attacks".to_string(),
+                    severity: "Medium".to_string(),
+                    category: "Security".to_string(),
+                    line_number: None,
+                    code_snippet: None,
+                    recommendation: "Replace tx.origin with msg.sender for all authorization checks.".to_string(),
+                    references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
+                });
+            }
         }
         
         vulnerabilities
