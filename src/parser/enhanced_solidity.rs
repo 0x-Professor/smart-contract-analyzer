@@ -189,6 +189,14 @@ impl EnhancedSolidityParser {
         })
     }
 
+    /// Parse multiple contracts from source code
+    pub fn parse_contracts(&self, source_code: &str) -> Result<Vec<EnhancedContract>> {
+        // For now, we'll assume single contract per source file
+        // This can be enhanced to support multiple contracts
+        let contract = self.parse_contract(source_code)?;
+        Ok(vec![contract])
+    }
+
     /// Parse a complete Solidity contract with enhanced error handling
     pub fn parse_contract(&self, source_code: &str) -> Result<EnhancedContract> {
         let mut context = ParseContext {
@@ -201,7 +209,7 @@ impl EnhancedSolidityParser {
 
         // Pre-process the source code
         let cleaned_source = self.preprocess_source(source_code)?;
-        let lines: Vec<&str> = cleaned_source.lines().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = cleaned_source.lines().collect();
 
         // Extract basic information
         let pragma_version = self.extract_pragma_version(&cleaned_source)?;
@@ -355,7 +363,7 @@ impl EnhancedSolidityParser {
 
     fn extract_enhanced_functions(&self, source_code: &str, context: &mut ParseContext) -> Result<Vec<EnhancedFunction>> {
         let mut functions = Vec::new();
-        let lines: Vec<&str> = source_code.lines().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().collect();
 
         // Find all function declarations
         for (line_idx, line) in lines.iter().enumerate() {
@@ -478,7 +486,7 @@ impl EnhancedSolidityParser {
     }
 
     fn extract_function_body_with_lines(&self, source_code: &str, function_name: &str, start_line: usize) -> Result<(String, usize, usize)> {
-        let lines: Vec<&str> = source_code.lines().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().collect();
         
         // Find the opening brace
         let mut brace_line = start_line;
@@ -556,7 +564,7 @@ impl EnhancedSolidityParser {
 
     fn extract_special_functions(&self, source_code: &str) -> Result<Vec<EnhancedFunction>> {
         let mut functions = Vec::new();
-        let lines: Vec<&str> = source_code.lines().enumerate().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
 
         // Constructor functions
         for (line_num, line) in &lines {
@@ -697,7 +705,7 @@ impl EnhancedSolidityParser {
 
     fn extract_enhanced_state_variables(&self, source_code: &str) -> Result<Vec<EnhancedVariable>> {
         let mut variables = Vec::new();
-        let lines: Vec<&str> = source_code.lines().enumerate().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
 
         for (line_num, line) in &lines_with_numbers {
             // Skip comments and empty lines
@@ -775,7 +783,7 @@ impl EnhancedSolidityParser {
 
     fn extract_events(&self, source_code: &str) -> Result<Vec<Event>> {
         let mut events = Vec::new();
-        let lines: Vec<&str> = source_code.lines().enumerate().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
 
         for (line_num, line) in &lines_with_numbers {
             if let Some(captures) = self.event_regex.captures(line) {
@@ -798,7 +806,7 @@ impl EnhancedSolidityParser {
 
     fn extract_modifiers(&self, source_code: &str) -> Result<Vec<ModifierDefinition>> {
         let mut modifiers = Vec::new();
-        let lines: Vec<&str> = source_code.lines().enumerate().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
 
         for (line_num, line) in &lines_with_numbers {
             if let Some(captures) = self.modifier_regex.captures(line) {
@@ -822,7 +830,7 @@ impl EnhancedSolidityParser {
 
     fn extract_structs(&self, source_code: &str) -> Result<Vec<StructDefinition>> {
         let mut structs = Vec::new();
-        let lines: Vec<&str> = source_code.lines().enumerate().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
 
         for (line_num, _) in lines {
             if let Some(captures) = self.struct_regex.captures(source_code) {
@@ -858,7 +866,7 @@ impl EnhancedSolidityParser {
 
     fn extract_enums(&self, source_code: &str) -> Result<Vec<EnumDefinition>> {
         let mut enums = Vec::new();
-        let lines: Vec<&str> = source_code.lines().enumerate().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
 
         for (line_num, _) in lines {
             if let Some(captures) = self.enum_regex.captures(source_code) {
@@ -885,7 +893,7 @@ impl EnhancedSolidityParser {
     fn extract_using_for(&self, source_code: &str) -> Result<Vec<UsingFor>> {
         let mut using_for = Vec::new();
         let using_regex = Regex::new(r"using\s+(\w+)\s+for\s+(\w+)\s*;")?;
-        let lines: Vec<&str> = source_code.lines().enumerate().collect();
+        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
 
         for (line_num, line) in &lines_with_numbers {
             if let Some(captures) = using_regex.captures(line) {
