@@ -578,7 +578,7 @@ impl GasAnalyzer {
         // Analyze loops
         let loop_patterns = ["for(", "while("];
         for pattern in &loop_patterns {
-            let count = body.matches(pattern).len() as u32;
+            let count = body.matches(pattern).count() as u32;
             if count > 0 {
                 operations.push(GasOperation {
                     operation_type: "Loop".to_string(),
