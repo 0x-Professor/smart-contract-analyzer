@@ -416,7 +416,7 @@ impl EnhancedSolidityParser {
                     visibility,
                     state_mutability,
                     modifiers,
-                    body,
+                    body: body.clone(),
                     line_start: line_start + 1,
                     line_end: line_end + 1, documentation: String::new(),
                     is_constructor: false,
