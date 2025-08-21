@@ -406,21 +406,73 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
-            if (function.body.contains("selfdestruct") || 
-                function.body.contains("suicide")) &&
-               !function.body.contains("onlyOwner") &&
-               !function.body.contains("require(msg.sender") {
-                vulnerabilities.push(Vulnerability {
-                    id: "SWC-106".to_string(),
-                    title: "Unprotected SELFDESTRUCT Instruction".to_string(),
-                    description: format!("Function '{}' contains selfdestruct without proper access controls", function.name),
-                    severity: "High".to_string(),
-                    category: "Security".to_string(),
-                    line_number: None,
-                    code_snippet: Some(function.body.clone()),
-                    recommendation: "Add proper access controls (like onlyOwner modifier) to functions containing selfdestruct.".to_string(),
-                    references: vec!["https://swcregistry.io/docs/SWC-106".to_string()],
-                });
+            let has_selfdestruct = function.body.contains("selfdestruct") || function.body.contains("suicide");
+            
+            if has_selfdestruct {
+                let mut has_proper_access_control = false;
+                let mut access_control_issues = Vec::new();
+                
+                // Check for proper access control modifiers
+                if function.modifiers.contains(&"onlyOwner".to_string()) ||
+                   function.modifiers.contains(&"onlyAdmin".to_string()) ||
+                   function.modifiers.iter().any(|m| m.contains("only")) {
+                    has_proper_access_control = true;
+                }
+                
+                // Check for access control in function body
+                if function.body.contains("require(msg.sender == owner") ||
+                   function.body.contains("require(msg.sender == admin") ||
+                   function.body.contains("require(owner == msg.sender") ||
+                   function.body.contains("onlyOwner") {
+                    has_proper_access_control = true;
+                }
+                
+                // Check for problematic access control patterns
+                if function.body.contains("require(tx.origin") {
+                    access_control_issues.push("uses tx.origin for authorization");
+                }
+                
+                if function.body.contains("require(msg.sender != address(0)") && !has_proper_access_control {
+                    access_control_issues.push("only checks for zero address");
+                }
+                
+                // Check for weak conditions
+                let lines: Vec<&str> = function.body.lines().collect();
+                for line in &lines {
+                    if line.contains("selfdestruct") || line.contains("suicide") {
+                        if line.contains("if") && (line.contains("==") || line.contains("!=")) {
+                            // Simple conditional check might be weak
+                            if line.contains("12345") || line.contains("code") || line.contains("password") {
+                                access_control_issues.push("uses weak conditional checks");
+                            }
+                        }
+                    }
+                }
+                
+                if !has_proper_access_control || !access_control_issues.is_empty() {
+                    let severity = if access_control_issues.is_empty() { "High" } else { "Critical" };
+                    
+                    let mut description = format!(
+                        "Function '{}' contains selfdestruct without proper access controls",
+                        function.name
+                    );
+                    
+                    if !access_control_issues.is_empty() {
+                        description.push_str(&format!(" and {}", access_control_issues.join(", ")));
+                    }
+                    
+                    vulnerabilities.push(Vulnerability {
+                        id: "SWC-106".to_string(),
+                        title: "Unprotected SELFDESTRUCT Instruction".to_string(),
+                        description,
+                        severity: severity.to_string(),
+                        category: "Security".to_string(),
+                        line_number: None,
+                        code_snippet: Some(function.body.clone()),
+                        recommendation: "Add proper access controls (like onlyOwner modifier) to functions containing selfdestruct. Consider using a two-step process with time delays for critical operations.".to_string(),
+                        references: vec!["https://swcregistry.io/docs/SWC-106".to_string()],
+                    });
+                }
             }
         }
         
