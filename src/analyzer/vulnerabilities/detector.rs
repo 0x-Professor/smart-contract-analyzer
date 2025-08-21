@@ -141,22 +141,62 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
-            if (function.body.contains("+") || 
-                function.body.contains("-") || 
-                function.body.contains("*") || 
-                function.body.contains("/")) &&
-               !function.body.contains("SafeMath") {
+            let mut has_arithmetic = false;
+            let mut has_safe_math = false;
+            
+            // Check for arithmetic operations
+            if function.body.contains("+") || 
+               function.body.contains("-") || 
+               function.body.contains("*") || 
+               function.body.contains("/") {
+                has_arithmetic = true;
+            }
+            
+            // Check for safety measures
+            if function.body.contains("SafeMath") ||
+               function.body.contains("checked") ||
+               function.body.contains("unchecked") ||
+               contract.source_code.contains("pragma solidity ^0.8") ||
+               function.body.contains("require(") ||
+               function.body.contains("assert(") {
+                has_safe_math = true;
+            }
+            
+            if has_arithmetic && !has_safe_math {
                 vulnerabilities.push(Vulnerability {
                     id: "SWC-101".to_string(),
                     title: "Integer Overflow and Underflow".to_string(),
-                    description: format!("Potential integer overflow/underflow in function '{}'", function.name),
+                    description: format!(
+                        "Function '{}' contains arithmetic operations without overflow protection",
+                        function.name
+                    ),
                     severity: "High".to_string(),
                     category: "Security".to_string(),
                     line_number: None,
                     code_snippet: Some(function.body.clone()),
-                    recommendation: "Use SafeMath library or add appropriate checks for arithmetic operations.".to_string(),
+                    recommendation: "Use SafeMath library, Solidity 0.8+ built-in checks, or add explicit overflow checks with require() statements.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
                 });
+            }
+            
+            // Check for specific dangerous patterns
+            if function.body.contains("++") || function.body.contains("--") {
+                if !function.body.contains("require(") && !function.body.contains("SafeMath") {
+                    vulnerabilities.push(Vulnerability {
+                        id: "SWC-101-INCREMENT".to_string(),
+                        title: "Unsafe Increment/Decrement".to_string(),
+                        description: format!(
+                            "Function '{}' uses increment/decrement operators without bounds checking",
+                            function.name
+                        ),
+                        severity: "Medium".to_string(),
+                        category: "Security".to_string(),
+                        line_number: None,
+                        code_snippet: Some(function.body.clone()),
+                        recommendation: "Add bounds checking before increment/decrement operations.".to_string(),
+                        references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
+                    });
+                }
             }
         }
         
