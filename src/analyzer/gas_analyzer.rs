@@ -593,7 +593,7 @@ impl GasAnalyzer {
         // Analyze conditionals
         let conditional_patterns = ["if(", "else if("];
         for pattern in &conditional_patterns {
-            let count = body.matches(pattern).len() as u32;
+            let count = body.matches(pattern).count() as u32;
             if count > 0 {
                 operations.push(GasOperation {
                     operation_type: "Conditional".to_string(),
