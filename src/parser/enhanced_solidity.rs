@@ -364,7 +364,7 @@ impl EnhancedSolidityParser {
 
     fn extract_enhanced_functions(&self, source_code: &str, context: &mut ParseContext) -> Result<Vec<EnhancedFunction>> {
         let mut functions = Vec::new();
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
         // Find all function declarations
         for (line_idx, line) in lines.iter().enumerate() {
@@ -487,7 +487,7 @@ impl EnhancedSolidityParser {
     }
 
     fn extract_function_body_with_lines(&self, source_code: &str, function_name: &str, start_line: usize) -> Result<(String, usize, usize)> {
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
         
         // Find the opening brace
         let mut brace_line = start_line;
@@ -568,7 +568,7 @@ impl EnhancedSolidityParser {
         let lines: Vec<&str> = source_code.lines().collect();
 
         // Constructor functions
-        for (line_num, line) in &lines {
+        for (line_num, line) in lines.iter().enumerate() {
             if let Some(captures) = self.constructor_regex.captures(line) {
                 let params_str = captures.get(1).map_or("", |m| m.as_str());
                 let parameters = self.parse_parameters(params_str)?;
@@ -610,7 +610,7 @@ impl EnhancedSolidityParser {
         }
 
         // Fallback functions
-        for (line_num, line) in &lines {
+        for (line_num, line) in lines.iter().enumerate() {
             if let Some(captures) = self.fallback_regex.captures(line) {
                 let state_mutability = if captures.get(2).is_some() {
                     StateMutability::Payable
@@ -641,7 +641,7 @@ impl EnhancedSolidityParser {
         }
 
         // Receive functions
-        for (line_num, line) in &lines {
+        for (line_num, line) in lines.iter().enumerate() {
             if let Some(_captures) = self.receive_regex.captures(line) {
                 let (body, line_start, line_end) = self.extract_function_body_with_lines(source_code, "receive", *line_num)?;
 

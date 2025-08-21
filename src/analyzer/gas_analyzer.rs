@@ -127,7 +127,7 @@ pub struct StorageOptimization {
     pub explanation: String,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum EfficiencyRating {
     Excellent, // <5% optimization potential
     Good,      // 5-15% optimization potential
