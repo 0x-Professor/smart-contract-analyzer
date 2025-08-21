@@ -86,12 +86,8 @@ impl VulnerabilityDetector {
                     description: format!("Potential reentrancy vulnerability in function '{}'", function.name),
                     severity: "High".to_string(),
                     category: "Security".to_string(),
-                    location: Some(crate::utils::errors::SourceLocation {
-                        file: "contract".to_string(),
-                        line: function.line_number,
-                        column: 1,
-                        length: None,
-                    }),
+                    line_number: Some(function.line_number as usize),
+                    code_snippet: Some(function.source_code.clone()),
                     recommendation: "Follow the checks-effects-interactions pattern. Update state before making external calls.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-107".to_string()],
                 });
