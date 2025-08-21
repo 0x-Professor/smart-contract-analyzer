@@ -191,7 +191,7 @@ impl Default for AnalysisConfig {
 impl EnhancedSmartContractAnalyzer {
     pub fn new(config: AnalysisConfig) -> Self {
         Self {
-            parser: EnhancedSolidityParser::new(),
+            parser: EnhancedSolidityParser::new().unwrap_or_else(|_| panic!("Failed to create parser")),
             vulnerability_detector: EnhancedVulnerabilityDetector::new(),
             gas_analyzer: GasAnalyzer::instance(),
             config,
