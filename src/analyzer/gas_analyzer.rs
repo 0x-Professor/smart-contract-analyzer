@@ -523,7 +523,7 @@ impl GasAnalyzer {
         ];
 
         for (symbol, op_name, cost) in &arithmetic_patterns {
-            let count = body.matches(symbol).len() as u32;
+            let count = body.matches(symbol).count() as u32;
             if count > 0 {
                 operations.push(GasOperation {
                     operation_type: format!("Arithmetic ({})", op_name),
