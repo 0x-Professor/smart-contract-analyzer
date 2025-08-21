@@ -90,8 +90,8 @@ function Test-Contract {
             $Results = Get-Content $OutputFile | ConvertFrom-Json
             
             # Check results
-            $VulnCount = $Results.security_analysis.total_issues
-            $RiskLevel = $Results.overall_summary.risk_level
+            $VulnCount = if ($Results.security_analysis) { $Results.security_analysis.total_issues } else { 0 }
+            $RiskLevel = if ($Results.overall_summary) { $Results.overall_summary.risk_level } else { "Unknown" }
             
             Write-Host "   ✅ Vulnerabilities Found: $VulnCount" -ForegroundColor Green
             Write-Host "   ✅ Risk Level: $RiskLevel" -ForegroundColor Green
