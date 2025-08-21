@@ -32,6 +32,9 @@ impl VulnerabilityDetector {
         vulnerabilities.extend(self.check_tx_origin_usage(contract));
         vulnerabilities.extend(self.check_timestamp_dependence(contract));
         vulnerabilities.extend(self.check_unprotected_selfdestruct(contract));
+        vulnerabilities.extend(self.check_access_control_issues(contract));
+        vulnerabilities.extend(self.check_denial_of_service(contract));
+        vulnerabilities.extend(self.check_front_running(contract));
 
         let total_issues = vulnerabilities.len();
         let critical_issues = vulnerabilities.iter().filter(|v| v.severity == "Critical").count();
@@ -356,7 +359,7 @@ impl VulnerabilityDetector {
                 let mut risky_patterns = Vec::new();
                 
                 for line in &lines {
-                    if (line.contains("block.timestamp") || line.contains("now") || line.contains("block.number")) {
+                    if line.contains("block.timestamp") || line.contains("now") || line.contains("block.number") {
                         if line.contains("random") || line.contains("Random") {
                             severity = "High";
                             risky_patterns.push("randomness generation");
@@ -473,6 +476,129 @@ impl VulnerabilityDetector {
                         references: vec!["https://swcregistry.io/docs/SWC-106".to_string()],
                     });
                 }
+            }
+        }
+        
+        vulnerabilities
+    }
+
+    fn check_access_control_issues(&self, contract: &Contract) -> Vec<Vulnerability> {
+        let mut vulnerabilities = Vec::new();
+        
+        for function in &contract.functions {
+            // Check for functions that should have access control
+            let is_sensitive = function.name.contains("admin") ||
+                function.name.contains("owner") ||
+                function.name.contains("withdraw") ||
+                function.name.contains("transfer") ||
+                function.name.contains("mint") ||
+                function.name.contains("burn") ||
+                function.name.contains("destroy") ||
+                function.name.contains("emergency") ||
+                function.name.contains("pause") ||
+                function.visibility == "external" && function.body.contains("=");
+            
+            if is_sensitive {
+                let has_access_control = !function.modifiers.is_empty() ||
+                    function.body.contains("require(msg.sender") ||
+                    function.body.contains("onlyOwner") ||
+                    function.body.contains("onlyAdmin");
+                
+                if !has_access_control {
+                    vulnerabilities.push(Vulnerability {
+                        id: "SWC-105".to_string(),
+                        title: "Unprotected Ether Withdrawal".to_string(),
+                        description: format!(
+                            "Function '{}' appears to be sensitive but lacks proper access control",
+                            function.name
+                        ),
+                        severity: "High".to_string(),
+                        category: "Security".to_string(),
+                        line_number: None,
+                        code_snippet: Some(function.body.clone()),
+                        recommendation: "Add proper access control modifiers or require statements to restrict access to sensitive functions.".to_string(),
+                        references: vec!["https://swcregistry.io/docs/SWC-105".to_string()],
+                    });
+                }
+            }
+        }
+        
+        vulnerabilities
+    }
+
+    fn check_denial_of_service(&self, contract: &Contract) -> Vec<Vulnerability> {
+        let mut vulnerabilities = Vec::new();
+        
+        for function in &contract.functions {
+            // Check for unbounded loops
+            if function.body.contains("for") || function.body.contains("while") {
+                let has_array_iteration = function.body.contains(".length") ||
+                    function.body.contains("array") ||
+                    function.body.contains("mapping");
+                
+                if has_array_iteration && !function.body.contains("require(") {
+                    vulnerabilities.push(Vulnerability {
+                        id: "SWC-128".to_string(),
+                        title: "DoS With Block Gas Limit".to_string(),
+                        description: format!(
+                            "Function '{}' contains unbounded loops that may cause denial of service",
+                            function.name
+                        ),
+                        severity: "Medium".to_string(),
+                        category: "Security".to_string(),
+                        line_number: None,
+                        code_snippet: Some(function.body.clone()),
+                        recommendation: "Add bounds checking or use pagination patterns to prevent gas limit issues.".to_string(),
+                        references: vec!["https://swcregistry.io/docs/SWC-128".to_string()],
+                    });
+                }
+            }
+            
+            // Check for external calls in loops
+            if function.body.contains("for") && 
+               (function.body.contains(".call(") || function.body.contains(".send(") || function.body.contains(".transfer(")) {
+                vulnerabilities.push(Vulnerability {
+                    id: "SWC-113".to_string(),
+                    title: "DoS with Failed Call".to_string(),
+                    description: format!(
+                        "Function '{}' makes external calls in loops which can cause denial of service",
+                        function.name
+                    ),
+                    severity: "High".to_string(),
+                    category: "Security".to_string(),
+                    line_number: None,
+                    code_snippet: Some(function.body.clone()),
+                    recommendation: "Avoid external calls in loops. Use pull payment patterns instead.".to_string(),
+                    references: vec!["https://swcregistry.io/docs/SWC-113".to_string()],
+                });
+            }
+        }
+        
+        vulnerabilities
+    }
+
+    fn check_front_running(&self, contract: &Contract) -> Vec<Vulnerability> {
+        let mut vulnerabilities = Vec::new();
+        
+        for function in &contract.functions {
+            // Check for price/value sensitive operations
+            if (function.body.contains("price") || function.body.contains("amount") || function.body.contains("bid")) &&
+               !function.body.contains("commit") &&
+               !function.body.contains("hash") {
+                vulnerabilities.push(Vulnerability {
+                    id: "SWC-114".to_string(),
+                    title: "Transaction Order Dependence".to_string(),
+                    description: format!(
+                        "Function '{}' may be vulnerable to front-running attacks due to price/value dependencies",
+                        function.name
+                    ),
+                    severity: "Medium".to_string(),
+                    category: "Security".to_string(),
+                    line_number: None,
+                    code_snippet: Some(function.body.clone()),
+                    recommendation: "Consider using commit-reveal schemes or other mechanisms to prevent front-running.".to_string(),
+                    references: vec!["https://swcregistry.io/docs/SWC-114".to_string()],
+                });
             }
         }
         
