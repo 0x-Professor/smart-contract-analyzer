@@ -10,7 +10,7 @@ pub struct GasAnalyzer {
     optimization_patterns: HashMap<String, OptimizationPattern>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct OptimizationPattern {
     pub id: String,
     pub name: String,
@@ -22,7 +22,7 @@ pub struct OptimizationPattern {
     pub examples: Vec<OptimizationExample>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum OptimizationType {
     Storage,
     Loop,
@@ -33,7 +33,7 @@ pub enum OptimizationType {
     Logic,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct GasSavings {
     pub min_savings: u64,
     pub max_savings: u64,
@@ -41,7 +41,7 @@ pub struct GasSavings {
     pub confidence_level: f32,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct OptimizationExample {
     pub before: String,
     pub after: String,
@@ -58,7 +58,7 @@ pub struct GasAnalysisReport {
     pub overall_efficiency: EfficiencyRating,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct FunctionGasAnalysis {
     pub function_name: String,
     pub estimated_cost: GasCostRange,
@@ -67,14 +67,14 @@ pub struct FunctionGasAnalysis {
     pub optimization_potential: u32, // 0-100 score
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct GasCostRange {
     pub min: u64,
     pub max: u64,
     pub typical: u64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct GasOperation {
     pub operation_type: String,
     pub cost: u64,
@@ -83,7 +83,7 @@ pub struct GasOperation {
     pub optimization_note: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct GasOptimization {
     pub id: String,
     pub title: String,
@@ -95,7 +95,7 @@ pub struct GasOptimization {
     pub code_examples: Option<OptimizationExample>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum OptimizationSeverity {
     Critical, // Major gas savings possible
     High,     // Significant savings
@@ -103,14 +103,14 @@ pub enum OptimizationSeverity {
     Low,      // Minor savings
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct OptimizationLocation {
     pub function_name: Option<String>,
     pub line_number: Option<usize>,
     pub code_snippet: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct StorageAnalysis {
     pub total_slots_used: u32,
     pub wasted_storage: u32,
@@ -118,7 +118,7 @@ pub struct StorageAnalysis {
     pub optimization_suggestions: Vec<StorageOptimization>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct StorageOptimization {
     pub variable_name: String,
     pub current_slot: u32,
