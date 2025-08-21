@@ -5,6 +5,14 @@ use regex::Regex;
 use std::collections::{HashMap, HashSet};
 use std::sync::OnceLock;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum VulnerabilitySeverity {
+    Critical,
+    High,
+    Medium,
+    Low,
+}
+
 /// Enhanced vulnerability detector with comprehensive SWC registry compliance
 pub struct EnhancedVulnerabilityDetector {
     patterns: HashMap<String, VulnerabilityPattern>,
