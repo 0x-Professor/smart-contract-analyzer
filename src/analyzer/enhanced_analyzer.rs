@@ -1,5 +1,5 @@
 use crate::parser::enhanced_solidity::{EnhancedSolidityParser, EnhancedContract};
-use crate::detector::enhanced_detector::{EnhancedVulnerabilityDetector, SecurityAnalysis, VulnerabilitySeverity};
+use crate::detector::enhanced_detector::{EnhancedVulnerabilityDetector, SecurityAnalysis};
 use crate::analyzer::gas_analyzer::{GasAnalyzer, GasAnalysisReport};
 use anyhow::{Result, Context};
 use rayon::prelude::*;
@@ -7,6 +7,7 @@ use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::{Duration, Instant};
+use walkdir;
 
 /// Enhanced smart contract analyzer with comprehensive analysis capabilities
 pub struct EnhancedSmartContractAnalyzer {
@@ -614,11 +615,12 @@ impl EnhancedSmartContractAnalyzer {
         // Security recommendations
         if let Some(security) = security_analysis {
             for vulnerability in &security.vulnerabilities {
-                let priority = match vulnerability.severity {
-                    crate::detector::enhanced_detector::VulnerabilitySeverity::Critical => RecommendationPriority::Immediate,
-                    crate::detector::enhanced_detector::VulnerabilitySeverity::High => RecommendationPriority::High,
-                    crate::detector::enhanced_detector::VulnerabilitySeverity::Medium => RecommendationPriority::Medium,
-                    crate::detector::enhanced_detector::VulnerabilitySeverity::Low => RecommendationPriority::Low,
+                let priority = match vulnerability.severity.as_str() {
+                    "Critical" => RecommendationPriority::Immediate,
+                    "High" => RecommendationPriority::High,
+                    "Medium" => RecommendationPriority::Medium,
+                    "Low" => RecommendationPriority::Low,
+                    _ => RecommendationPriority::Low,
                 };
 
                 recommendations.push(Recommendation {
