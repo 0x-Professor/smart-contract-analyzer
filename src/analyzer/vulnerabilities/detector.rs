@@ -173,17 +173,17 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
-            if function.source_code.contains("block.timestamp") ||
-               function.source_code.contains("now") ||
-               function.source_code.contains("block.number") {
+            if function.body.contains("block.timestamp") ||
+               function.body.contains("now") ||
+               function.body.contains("block.number") {
                 vulnerabilities.push(Vulnerability {
                     id: "SWC-116".to_string(),
                     title: "Block values as a proxy for time".to_string(),
                     description: format!("Function '{}' uses block timestamp which can be manipulated by miners", function.name),
                     severity: "Low".to_string(),
                     category: "Security".to_string(),
-                    line_number: Some(function.line_number as usize),
-                    code_snippet: Some(function.source_code.clone()),
+                    line_number: None,
+                    code_snippet: Some(function.body.clone()),
                     recommendation: "Avoid using block.timestamp for critical logic. Consider using block numbers or external time oracles.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-116".to_string()],
                 });
