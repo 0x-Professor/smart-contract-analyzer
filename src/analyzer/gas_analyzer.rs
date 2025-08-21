@@ -621,9 +621,9 @@ impl GasAnalyzer {
         ];
 
         for (pattern, op_name) in &memory_patterns {
-            let count = body.matches(pattern).len() as u32;
+            let count = body.matches(pattern).count() as u32;
             if count > 0 {
-                let cost = match op_name {
+                let cost = match *op_name {
                     "Keccak256 Hash" => *self.operation_costs.get("KECCAK256").unwrap_or(&30),
                     _ => 100, // Rough estimate for memory operations
                 };
