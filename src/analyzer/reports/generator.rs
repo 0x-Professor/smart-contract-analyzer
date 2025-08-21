@@ -186,6 +186,7 @@ impl ReportGenerator {
 
         let vulnerability_trend = self.calculate_vulnerability_trend(&historical_reports);
         let gas_trend = self.calculate_gas_trend(&historical_reports);
+        let improvement_suggestions = self.generate_trend_based_suggestions(&vulnerability_trend, &gas_trend);
 
         TrendReport {
             contract_name: contract.name.clone(),
@@ -193,7 +194,7 @@ impl ReportGenerator {
             historical_reports,
             vulnerability_trend,
             gas_trend,
-            improvement_suggestions: self.generate_trend_based_suggestions(&vulnerability_trend, &gas_trend),
+            improvement_suggestions,
         }
     }
 
