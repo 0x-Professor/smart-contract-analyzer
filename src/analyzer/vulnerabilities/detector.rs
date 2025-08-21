@@ -337,18 +337,63 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
-            if function.body.contains("block.timestamp") ||
-               function.body.contains("now") ||
-               function.body.contains("block.number") {
+            let mut issues = Vec::new();
+            
+            if function.body.contains("block.timestamp") {
+                issues.push("block.timestamp");
+            }
+            if function.body.contains("now") {
+                issues.push("now");
+            }
+            if function.body.contains("block.number") {
+                issues.push("block.number");
+            }
+            
+            if !issues.is_empty() {
+                // Determine severity based on usage context
+                let lines: Vec<&str> = function.body.lines().collect();
+                let mut severity = "Low";
+                let mut risky_patterns = Vec::new();
+                
+                for line in &lines {
+                    if (line.contains("block.timestamp") || line.contains("now") || line.contains("block.number")) {
+                        if line.contains("random") || line.contains("Random") {
+                            severity = "High";
+                            risky_patterns.push("randomness generation");
+                        } else if line.contains("require(") || line.contains("assert(") {
+                            if severity != "High" { severity = "Medium"; }
+                            risky_patterns.push("conditional logic");
+                        } else if line.contains("=") && (line.contains("reward") || line.contains("bonus") || line.contains("payment")) {
+                            if severity != "High" { severity = "Medium"; }
+                            risky_patterns.push("payment calculation");
+                        }
+                    }
+                }
+                
+                let description = if !risky_patterns.is_empty() {
+                    format!(
+                        "Function '{}' uses {} for {}, which can be manipulated by miners",
+                        function.name,
+                        issues.join(", "),
+                        risky_patterns.join(" and ")
+                    )
+                } else {
+                    format!(
+                        "Function '{}' relies on {} which can be manipulated by miners",
+                        function.name,
+                        issues.join(", ")
+                    )
+                };
+                
                 vulnerabilities.push(Vulnerability {
                     id: "SWC-116".to_string(),
                     title: "Block values as a proxy for time".to_string(),
-                    description: format!("Function '{}' uses block timestamp which can be manipulated by miners", function.name),
-                    severity: "Low".to_string(),
+                    description,
+                    severity: severity.to_string(),
                     category: "Security".to_string(),
                     line_number: None,
                     code_snippet: Some(function.body.clone()),
-                    recommendation: "Avoid using block.timestamp for critical logic. Consider using block numbers or external time oracles.".to_string(),
+                    recommendation: "Avoid using block timestamp for critical logic. Consider using block numbers with appropriate delays, external time oracles, or commit-reveal schemes for randomness.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-116".to_string()],
                 });
             }
