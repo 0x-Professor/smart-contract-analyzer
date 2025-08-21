@@ -2,7 +2,6 @@ use crate::types::Contract;
 
 pub type RuleChecker = Box<dyn Fn(&Contract) -> bool + Send + Sync>;
 
-#[derive(Debug)]
 pub struct VulnerabilityRule {
     pub id: String,
     pub title: String,
