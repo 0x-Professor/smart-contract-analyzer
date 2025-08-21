@@ -197,18 +197,18 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
-            if (function.source_code.contains("selfdestruct") || 
-                function.source_code.contains("suicide")) &&
-               !function.source_code.contains("onlyOwner") &&
-               !function.source_code.contains("require(msg.sender") {
+            if (function.body.contains("selfdestruct") || 
+                function.body.contains("suicide")) &&
+               !function.body.contains("onlyOwner") &&
+               !function.body.contains("require(msg.sender") {
                 vulnerabilities.push(Vulnerability {
                     id: "SWC-106".to_string(),
                     title: "Unprotected SELFDESTRUCT Instruction".to_string(),
                     description: format!("Function '{}' contains selfdestruct without proper access controls", function.name),
                     severity: "High".to_string(),
                     category: "Security".to_string(),
-                    line_number: Some(function.line_number as usize),
-                    code_snippet: Some(function.source_code.clone()),
+                    line_number: None,
+                    code_snippet: Some(function.body.clone()),
                     recommendation: "Add proper access controls (like onlyOwner modifier) to functions containing selfdestruct.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-106".to_string()],
                 });
