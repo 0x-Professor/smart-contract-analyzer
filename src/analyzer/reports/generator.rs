@@ -1,6 +1,7 @@
 use crate::types::{AnalysisReport, Contract, GasReport, VulnerabilityReport};
 use crate::analyzer::gas::StaticGasAnalyzer;
 use crate::analyzer::vulnerabilities::VulnerabilityDetector;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 pub struct ReportGenerator {
