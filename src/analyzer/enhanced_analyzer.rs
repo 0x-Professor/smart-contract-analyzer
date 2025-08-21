@@ -348,56 +348,26 @@ impl EnhancedSmartContractAnalyzer {
         let primary_contract = contracts.first()
             .context("No contracts found for analysis")?;
 
-        // Run analyses in parallel
-        let results: Vec<Result<AnalysisType>> = vec![
-            if self.config.enable_vulnerability_detection {
-                Some(|| -> Result<AnalysisType> {
-                    let analysis = self.vulnerability_detector.analyze_contract(primary_contract)?;
-                    Ok(AnalysisType::Security(analysis))
-                })
-            } else {
-                None
-            },
-            if self.config.enable_gas_analysis {
-                Some(|| -> Result<AnalysisType> {
-                    let analysis = self.gas_analyzer.analyze_contract(primary_contract)?;
-                    Ok(AnalysisType::Gas(analysis))
-                })
-            } else {
-                None
-            },
-            if self.config.enable_code_quality_analysis {
-                Some(|| -> Result<AnalysisType> {
-                    let analysis = self.analyze_code_quality(primary_contract)?;
-                    Ok(AnalysisType::CodeQuality(analysis))
-                })
-            } else {
-                None
-            },
-        ]
-        .into_iter()
-        .filter_map(|f| f)
-        .collect::<Vec<_>>()
-        .into_par_iter()
-        .map(|f| f())
-        .collect();
-
-        // Check timeout
-        if start_time.elapsed() > timeout {
-            anyhow::bail!("Analysis timeout exceeded during parallel analysis");
-        }
-
-        // Process results
+        // Run analyses
         let mut security_analysis = None;
         let mut gas_analysis = None;
         let mut code_quality_metrics = None;
 
-        for result in results {
-            match result? {
-                AnalysisType::Security(analysis) => security_analysis = Some(analysis),
-                AnalysisType::Gas(analysis) => gas_analysis = Some(analysis),
-                AnalysisType::CodeQuality(analysis) => code_quality_metrics = Some(analysis),
-            }
+        if self.config.enable_vulnerability_detection {
+            security_analysis = Some(self.vulnerability_detector.analyze_contract(primary_contract)?);
+        }
+
+        if self.config.enable_gas_analysis {
+            gas_analysis = Some(self.gas_analyzer.analyze_contract(primary_contract)?);
+        }
+
+        if self.config.enable_code_quality_analysis {
+            code_quality_metrics = Some(self.analyze_code_quality(primary_contract)?);
+        }
+
+        // Check timeout
+        if start_time.elapsed() > timeout {
+            anyhow::bail!("Analysis timeout exceeded during parallel analysis");
         }
 
         Ok((security_analysis, gas_analysis, code_quality_metrics))

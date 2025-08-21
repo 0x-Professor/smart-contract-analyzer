@@ -67,7 +67,7 @@ pub struct CodeQualityReport {
     pub score: u32,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct GasIssue {
     pub id: String,
     pub title: String,
@@ -453,7 +453,7 @@ impl EnhancedVulnerabilityDetector {
         Ok(SecurityAnalysis {
             vulnerabilities,
             gas_issues,
-            code_quality,
+            code_quality: code_quality.issues,
             risk_score: risk_score as f32,
             security_score,
         })
