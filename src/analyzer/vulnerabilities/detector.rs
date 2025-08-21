@@ -101,19 +101,19 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
-            if (function.source_code.contains("+") || 
-                function.source_code.contains("-") || 
-                function.source_code.contains("*") || 
-                function.source_code.contains("/")) &&
-               !function.source_code.contains("SafeMath") {
+            if (function.body.contains("+") || 
+                function.body.contains("-") || 
+                function.body.contains("*") || 
+                function.body.contains("/")) &&
+               !function.body.contains("SafeMath") {
                 vulnerabilities.push(Vulnerability {
                     id: "SWC-101".to_string(),
                     title: "Integer Overflow and Underflow".to_string(),
                     description: format!("Potential integer overflow/underflow in function '{}'", function.name),
                     severity: "High".to_string(),
                     category: "Security".to_string(),
-                    line_number: Some(function.line_number as usize),
-                    code_snippet: Some(function.source_code.clone()),
+                    line_number: None,
+                    code_snippet: Some(function.body.clone()),
                     recommendation: "Use SafeMath library or add appropriate checks for arithmetic operations.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
                 });
