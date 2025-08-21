@@ -143,7 +143,7 @@ impl EnhancedVulnerabilityDetector {
                 "pragma solidity ^0.8".to_string(),
             ],
             recommendation: "Use SafeMath library, Solidity 0.8+ built-in checks, or explicit bounds checking".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
             confidence: 90,
         });
 
@@ -157,7 +157,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"pragma solidity".to_string()],
             exclusions: vec![],
             recommendation: "Use the latest stable Solidity compiler version".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-102".to_string()],
             confidence: 100,
         });
 
@@ -171,7 +171,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"pragma solidity\s*[\^~><=]".to_string()],
             exclusions: vec![],
             recommendation: "Lock pragma to specific compiler version or narrow range".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-103".to_string()],
             confidence: 95,
         });
 
@@ -189,7 +189,7 @@ impl EnhancedVulnerabilityDetector {
             ],
             exclusions: vec!["require(".to_string(), "assert(".to_string(), "if(".to_string()],
             recommendation: "Check return value of low-level calls and handle failures appropriately".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-104".to_string()],
             confidence: 85,
         });
 
@@ -211,7 +211,7 @@ impl EnhancedVulnerabilityDetector {
                 "modifier".to_string(),
             ],
             recommendation: "Add proper access control to withdrawal functions".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-105".to_string()],
             confidence: 80,
         });
 
@@ -234,7 +234,7 @@ impl EnhancedVulnerabilityDetector {
                 "mutex".to_string(),
             ],
             recommendation: "Use ReentrancyGuard or follow Checks-Effects-Interactions pattern".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-107".to_string()],
             confidence: 85,
         });
 
@@ -252,7 +252,7 @@ impl EnhancedVulnerabilityDetector {
                 "internal".to_string(),
             ],
             recommendation: "Always specify state variable visibility explicitly".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-108".to_string()],
             confidence: 90,
         });
 
@@ -266,7 +266,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"storage\s+\w+;".to_string()],
             exclusions: vec!["=".to_string()],
             recommendation: "Initialize storage pointers explicitly or use memory/calldata".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-109".to_string()],
             confidence: 95,
         });
 
@@ -280,7 +280,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"assert\(".to_string()],
             exclusions: vec![],
             recommendation: "Use require() for user input validation, reserve assert() for internal errors".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-110".to_string()],
             confidence: 85,
         });
 
@@ -294,7 +294,7 @@ impl EnhancedVulnerabilityDetector {
             patterns: vec![r"tx\.origin".to_string()],
             exclusions: vec![],
             recommendation: "Use msg.sender instead of tx.origin for authorization".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
             confidence: 95,
         });
 
@@ -312,7 +312,7 @@ impl EnhancedVulnerabilityDetector {
             ],
             exclusions: vec![],
             recommendation: "Avoid using block timestamp for critical logic or use with appropriate tolerance".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-116".to_string()],
             confidence: 80,
         });
 
@@ -331,7 +331,7 @@ impl EnhancedVulnerabilityDetector {
             ],
             exclusions: vec![],
             recommendation: "Use commit-reveal schemes or external oracles for randomness".to_string(),
-            references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+            references: vec!["https://swcregistry.io/docs/SWC-120".to_string()],
             confidence: 90,
         });
 
@@ -843,7 +843,7 @@ impl EnhancedVulnerabilityDetector {
                 line_number: Some(function.line_start),
                 code_snippet: Some(function.body[..std::cmp::min(200, function.body.len())].to_string()),
                 recommendation: "Use require() for input validation and reserve assert() for internal errors".to_string(),
-                references: vec!["https://swcregistry.io/docs/SWC-100".to_string()],
+                references: vec!["https://swcregistry.io/docs/SWC-110".to_string()],
                 swc_id: "SWC-110".to_string(),
                 impact: "Medium - assert() failures consume all gas and can cause DoS".to_string(),
                 example: None,
