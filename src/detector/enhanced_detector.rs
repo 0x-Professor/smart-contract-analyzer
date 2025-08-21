@@ -94,6 +94,11 @@ impl EnhancedVulnerabilityDetector {
         detector
     }
 
+    /// Analyze a contract for vulnerabilities (wrapper for enhanced analysis)
+    pub fn analyze_contract(&self, contract: &EnhancedContract) -> Result<SecurityAnalysis> {
+        self.analyze_enhanced_contract(contract)
+    }
+
     /// Load comprehensive SWC registry patterns
     fn load_swc_patterns(&mut self) {
         // SWC-100: Function Default Visibility
