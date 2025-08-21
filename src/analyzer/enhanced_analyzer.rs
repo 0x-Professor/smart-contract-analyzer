@@ -1,5 +1,5 @@
 use crate::parser::enhanced_solidity::{EnhancedSolidityParser, EnhancedContract};
-use crate::detector::enhanced_detector::{EnhancedVulnerabilityDetector, SecurityAnalysis};
+use crate::detector::enhanced_detector::{EnhancedVulnerabilityDetector, SecurityAnalysis, VulnerabilitySeverity};
 use crate::analyzer::gas_analyzer::{GasAnalyzer, GasAnalysisReport};
 use anyhow::{Result, Context};
 use rayon::prelude::*;
@@ -7,7 +7,6 @@ use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::{Duration, Instant};
-use walkdir::WalkDir;
 
 /// Enhanced smart contract analyzer with comprehensive analysis capabilities
 pub struct EnhancedSmartContractAnalyzer {
