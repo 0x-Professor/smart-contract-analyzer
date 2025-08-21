@@ -1,4 +1,9 @@
-use crate::types::{Contract, Vulnerability, VulnerabilityReport};
+use crate::types::{Contract, Vulnerabi        let total_issues = vulnerabilities.len();
+
+        VulnerabilityReport {
+            contract_name: contract.name.clone(),
+            vulnerabilities,
+            total_issues,, VulnerabilityReport};
 use crate::analyzer::vulnerabilities::{VulnerabilityPattern, VulnerabilityRule};
 use regex::Regex;
 
