@@ -294,7 +294,7 @@ pub struct ReportSummary {
     pub optimization_potential: usize,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SecurityIssueSummary {
     pub critical: usize,
     pub high: usize,
@@ -302,7 +302,7 @@ pub struct SecurityIssueSummary {
     pub low: usize,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ComparisonReport {
     pub contracts: Vec<AnalysisReport>,
     pub best_gas_efficiency: Option<String>,
@@ -310,7 +310,7 @@ pub struct ComparisonReport {
     pub analysis_timestamp: String,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TrendReport {
     pub contract_name: String,
     pub current_report: AnalysisReport,
@@ -320,7 +320,7 @@ pub struct TrendReport {
     pub improvement_suggestions: Vec<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TrendData {
     pub direction: String,
     pub change_percentage: f64,
