@@ -50,6 +50,7 @@ pub struct EnhancedFunction {
     pub has_overrides: bool,
     pub complexity: u32,
     pub gas_estimate: Option<u64>,
+    pub documentation: String, // Add documentation field
 }
 
 #[derive(Debug, Clone)]

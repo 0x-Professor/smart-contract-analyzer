@@ -19,6 +19,7 @@ pub struct SecurityAnalysis {
     pub gas_issues: Vec<GasIssue>,
     pub code_quality: Vec<CodeQualityIssue>,
     pub risk_score: f32,
+    pub security_score: f32, // Add this field
 }
 
 /// Enhanced comprehensive contract analysis
@@ -441,12 +442,20 @@ impl EnhancedVulnerabilityDetector {
 
         // Calculate risk score
         let risk_score = self.calculate_risk_score(&vulnerabilities);
+        
+        // Calculate security score (higher is better, 0-100 scale)
+        let security_score = if vulnerabilities.is_empty() {
+            100.0
+        } else {
+            (100.0 - risk_score as f32).max(0.0)
+        };
 
         Ok(SecurityAnalysis {
             vulnerabilities,
             gas_issues,
             code_quality,
-            risk_score,
+            risk_score: risk_score as f32,
+            security_score,
         })
     }
 
