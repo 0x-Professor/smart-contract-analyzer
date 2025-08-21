@@ -169,16 +169,61 @@ Configuration management.
 ## Project Structure
 
 ```
-src/
-├── analyzer/           # Analysis engines
-│   ├── gas/           # Gas analysis
-│   └── vulnerabilities/  # Security analysis
-├── blockchain/        # Blockchain interaction
-├── cli/              # Command-line interface
-├── config/           # Configuration management
-├── parser/           # Contract parsing
-├── types/            # Data structures
-└── utils/            # Utilities and helpers
+smart-contract-analyzer/
+├── Cargo.toml
+├── src/
+│   ├── main.rs
+│   ├── lib.rs
+│   ├── config/
+│   │   ├── mod.rs
+│   │   └── settings.rs
+│   ├── parser/
+│   │   ├── mod.rs
+│   │   ├── solidity.rs
+│   │   ├── bytecode.rs
+│   │   └── abi.rs
+│   ├── analyzer/
+│   │   ├── mod.rs
+│   │   ├── gas/
+│   │   │   ├── mod.rs
+│   │   │   ├── static_analyzer.rs
+│   │   │   ├── dynamic_analyzer.rs
+│   │   │   └── optimizer.rs
+│   │   ├── vulnerabilities/
+│   │   │   ├── mod.rs
+│   │   │   ├── detector.rs
+│   │   │   ├── patterns.rs
+│   │   │   └── rules.rs
+│   │   └── reports/
+│   │       ├── mod.rs
+│   │       ├── generator.rs
+│   │       └── formatter.rs
+│   ├── blockchain/
+│   │   ├── mod.rs
+│   │   ├── client.rs
+│   │   ├── contract.rs
+│   │   └── simulation.rs
+│   ├── cli/
+│   │   ├── mod.rs
+│   │   ├── commands.rs
+│   │   └── args.rs
+│   ├── utils/
+│   │   ├── mod.rs
+│   │   ├── helpers.rs
+│   │   └── errors.rs
+│   └── types/
+│       ├── mod.rs
+│       ├── contract.rs
+│       ├── analysis.rs
+│       └── vulnerability.rs
+├── tests/
+│   ├── integration/
+│   └── unit/
+├── examples/
+├── docs/
+└── config/
+    ├── rules.json
+    └── settings.toml
 ```
 
 ## Development
