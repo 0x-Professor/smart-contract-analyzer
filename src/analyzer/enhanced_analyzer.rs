@@ -532,11 +532,12 @@ impl EnhancedSmartContractAnalyzer {
         // Count security issues
         if let Some(security) = security_analysis {
             for vuln in &security.vulnerabilities {
-                match vuln.severity {
-                    crate::detector::enhanced_detector::VulnerabilitySeverity::Critical => critical_count += 1,
-                    crate::detector::enhanced_detector::VulnerabilitySeverity::High => high_count += 1,
-                    crate::detector::enhanced_detector::VulnerabilitySeverity::Medium => medium_count += 1,
-                    crate::detector::enhanced_detector::VulnerabilitySeverity::Low => low_count += 1,
+                match vuln.severity.as_str() {
+                    "Critical" => critical_count += 1,
+                    "High" => high_count += 1,
+                    "Medium" => medium_count += 1,
+                    "Low" => low_count += 1,
+                    _ => low_count += 1, // Default to low for unknown severities
                 }
             }
         }
