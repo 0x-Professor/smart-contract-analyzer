@@ -7,6 +7,7 @@ use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::{Duration, Instant};
+use walkdir::WalkDir;
 
 /// Enhanced smart contract analyzer with comprehensive analysis capabilities
 pub struct EnhancedSmartContractAnalyzer {
