@@ -556,7 +556,7 @@ impl GasAnalyzer {
         ];
 
         for (pattern, call_type) in &call_patterns {
-            let count = body.matches(pattern).len() as u32;
+            let count = body.matches(pattern).count() as u32;
             if count > 0 {
                 let base_cost = *self.operation_costs.get("CALL").unwrap_or(&2600);
                 operations.push(GasOperation {
