@@ -810,33 +810,3 @@ enum AnalysisType {
     Gas(GasAnalysisReport),
     CodeQuality(CodeQualityMetrics),
 }
-
-// Helper trait for severity level ordering
-impl PartialOrd for crate::detector::enhanced_detector::VulnerabilitySeverity {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        use crate::detector::enhanced_detector::VulnerabilitySeverity;
-        use std::cmp::Ordering;
-
-        let self_val = match self {
-            VulnerabilitySeverity::Critical => 4,
-            VulnerabilitySeverity::High => 3,
-            VulnerabilitySeverity::Medium => 2,
-            VulnerabilitySeverity::Low => 1,
-        };
-
-        let other_val = match other {
-            VulnerabilitySeverity::Critical => 4,
-            VulnerabilitySeverity::High => 3,
-            VulnerabilitySeverity::Medium => 2,
-            VulnerabilitySeverity::Low => 1,
-        };
-
-        Some(self_val.cmp(&other_val))
-    }
-}
-
-impl Ord for crate::detector::enhanced_detector::VulnerabilitySeverity {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.partial_cmp(other).unwrap()
-    }
-}
