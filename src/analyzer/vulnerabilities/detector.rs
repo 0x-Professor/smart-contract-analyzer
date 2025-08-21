@@ -112,12 +112,8 @@ impl VulnerabilityDetector {
                     description: format!("Potential integer overflow/underflow in function '{}'", function.name),
                     severity: "High".to_string(),
                     category: "Security".to_string(),
-                    location: Some(crate::utils::errors::SourceLocation {
-                        file: "contract".to_string(),
-                        line: function.line_number,
-                        column: 1,
-                        length: None,
-                    }),
+                    line_number: Some(function.line_number as usize),
+                    code_snippet: Some(function.source_code.clone()),
                     recommendation: "Use SafeMath library or add appropriate checks for arithmetic operations.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-101".to_string()],
                 });
@@ -142,12 +138,8 @@ impl VulnerabilityDetector {
                     description: format!("Unchecked return value in function '{}'", function.name),
                     severity: "Medium".to_string(),
                     category: "Security".to_string(),
-                    location: Some(crate::utils::errors::SourceLocation {
-                        file: "contract".to_string(),
-                        line: function.line_number,
-                        column: 1,
-                        length: None,
-                    }),
+                    line_number: Some(function.line_number as usize),
+                    code_snippet: Some(function.source_code.clone()),
                     recommendation: "Check the return value of external calls with require() or handle the failure case.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-104".to_string()],
                 });
@@ -167,7 +159,8 @@ impl VulnerabilityDetector {
                 description: "Use of tx.origin for authorization is vulnerable to phishing attacks".to_string(),
                 severity: "Medium".to_string(),
                 category: "Security".to_string(),
-                location: None,
+                line_number: None,
+                code_snippet: None,
                 recommendation: "Use msg.sender instead of tx.origin for authorization checks.".to_string(),
                 references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
             });
@@ -189,12 +182,8 @@ impl VulnerabilityDetector {
                     description: format!("Function '{}' uses block timestamp which can be manipulated by miners", function.name),
                     severity: "Low".to_string(),
                     category: "Security".to_string(),
-                    location: Some(crate::utils::errors::SourceLocation {
-                        file: "contract".to_string(),
-                        line: function.line_number,
-                        column: 1,
-                        length: None,
-                    }),
+                    line_number: Some(function.line_number as usize),
+                    code_snippet: Some(function.source_code.clone()),
                     recommendation: "Avoid using block.timestamp for critical logic. Consider using block numbers or external time oracles.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-116".to_string()],
                 });
@@ -218,12 +207,8 @@ impl VulnerabilityDetector {
                     description: format!("Function '{}' contains selfdestruct without proper access controls", function.name),
                     severity: "High".to_string(),
                     category: "Security".to_string(),
-                    location: Some(crate::utils::errors::SourceLocation {
-                        file: "contract".to_string(),
-                        line: function.line_number,
-                        column: 1,
-                        length: None,
-                    }),
+                    line_number: Some(function.line_number as usize),
+                    code_snippet: Some(function.source_code.clone()),
                     recommendation: "Add proper access controls (like onlyOwner modifier) to functions containing selfdestruct.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-106".to_string()],
                 });
