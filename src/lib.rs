@@ -14,4 +14,9 @@ pub use cli::*;
 pub use utils::*;
 pub use types::*;
 
-pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+// Re-export error types and Result from utils
+pub use utils::errors::{SmartContractAnalyzerError, Result};
+
+// Re-export main types
+pub use config::Settings;
+pub use types::{Contract, AnalysisReport, Vulnerability};
