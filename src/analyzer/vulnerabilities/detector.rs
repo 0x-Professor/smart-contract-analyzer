@@ -278,6 +278,9 @@ impl VulnerabilityDetector {
                                     call_type
                                 ),
                                 references: vec!["https://swcregistry.io/docs/SWC-104".to_string()],
+                                swc_id: "SWC-104".to_string(),
+                                impact: format!("{} - unchecked {} can fail silently", if call_type == "delegatecall" { "High" } else { "Medium" }, call_type),
+                                example: None,
                             });
                         }
                     }
@@ -319,6 +322,9 @@ impl VulnerabilityDetector {
                                 code_snippet: Some(line.to_string()),
                                 recommendation: "Use msg.sender instead of tx.origin for authorization checks. tx.origin can be manipulated in phishing attacks.".to_string(),
                                 references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
+                                swc_id: "SWC-115".to_string(),
+                                impact: "Medium - tx.origin can be manipulated in phishing attacks".to_string(),
+                                example: None,
                             });
                             break; // Only report once per function
                         }
@@ -338,6 +344,9 @@ impl VulnerabilityDetector {
                     code_snippet: None,
                     recommendation: "Replace tx.origin with msg.sender for all authorization checks.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-115".to_string()],
+                    swc_id: "SWC-115".to_string(),
+                    impact: "Medium - tx.origin can be manipulated in phishing attacks".to_string(),
+                    example: None,
                 });
             }
         }
@@ -527,6 +536,9 @@ impl VulnerabilityDetector {
                         code_snippet: Some(function.body.clone()),
                         recommendation: "Add proper access control modifiers or require statements to restrict access to sensitive functions.".to_string(),
                         references: vec!["https://swcregistry.io/docs/SWC-105".to_string()],
+                        swc_id: "SWC-105".to_string(),
+                        impact: "High - unprotected sensitive functions can be exploited by unauthorized users".to_string(),
+                        example: None,
                     });
                 }
             }
@@ -559,6 +571,9 @@ impl VulnerabilityDetector {
                         code_snippet: Some(function.body.clone()),
                         recommendation: "Add bounds checking or use pagination patterns to prevent gas limit issues.".to_string(),
                         references: vec!["https://swcregistry.io/docs/SWC-128".to_string()],
+                        swc_id: "SWC-128".to_string(),
+                        impact: "Medium - unbounded loops can cause DoS by hitting gas limits".to_string(),
+                        example: None,
                     });
                 }
             }
@@ -579,6 +594,9 @@ impl VulnerabilityDetector {
                     code_snippet: Some(function.body.clone()),
                     recommendation: "Avoid external calls in loops. Use pull payment patterns instead.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-113".to_string()],
+                    swc_id: "SWC-113".to_string(),
+                    impact: "High - failed external calls in loops can cause denial of service".to_string(),
+                    example: None,
                 });
             }
         }
@@ -607,6 +625,9 @@ impl VulnerabilityDetector {
                     code_snippet: Some(function.body.clone()),
                     recommendation: "Consider using commit-reveal schemes or other mechanisms to prevent front-running.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-114".to_string()],
+                    swc_id: "SWC-114".to_string(),
+                    impact: "Medium - transactions can be front-run causing financial loss".to_string(),
+                    example: None,
                 });
             }
         }
