@@ -14,6 +14,7 @@ sha2 = "0.10"
 regex = "1.0"
 toml = "0.8"
 chrono = { version = "0.4", features = ["serde"] }
+rand = "0.8"
 
 [dev-dependencies]
 tokio-test = "0.4"
