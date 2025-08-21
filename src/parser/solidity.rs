@@ -85,18 +85,81 @@ impl SolidityParser {
             let state_mutability = captures.get(4).map_or(String::new(), |m| m.as_str().to_string());
             let returns = captures.get(5).map_or(String::new(), |m| m.as_str().to_string());
 
+            // Extract function body
+            let function_body = self.extract_function_body(source_code, &name)?;
+            
+            // Extract modifiers
+            let modifiers = self.extract_function_modifiers(source_code, &name);
+
             functions.push(Function {
                 name,
                 parameters,
                 visibility,
                 state_mutability,
                 returns,
-                modifiers: Vec::new(),
-                body: String::new(), // Would need more complex parsing for function body
+                modifiers,
+                body: function_body,
             });
         }
 
         Ok(functions)
+    }
+
+    fn extract_function_body(&self, source_code: &str, function_name: &str) -> crate::Result<String> {
+        // Create a regex to find the specific function
+        let function_start_regex = Regex::new(&format!(
+            r"function\s+{}\s*\([^)]*\)[^{{]*\{{", 
+            regex::escape(function_name)
+        )).map_err(|e| format!("Regex error: {}", e))?;
+        
+        if let Some(match_obj) = function_start_regex.find(source_code) {
+            let start = match_obj.end() - 1; // Start from the opening brace
+            let mut brace_count = 0;
+            let mut end = start;
+            let chars: Vec<char> = source_code.chars().collect();
+            
+            for i in start..chars.len() {
+                match chars[i] {
+                    '{' => brace_count += 1,
+                    '}' => {
+                        brace_count -= 1;
+                        if brace_count == 0 {
+                            end = i + 1;
+                            break;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+            
+            if end > start {
+                return Ok(source_code[start..end].to_string());
+            }
+        }
+        
+        Ok(String::new())
+    }
+
+    fn extract_function_modifiers(&self, source_code: &str, function_name: &str) -> Vec<String> {
+        let function_line_regex = Regex::new(&format!(
+            r"function\s+{}\s*\([^)]*\)\s*([^{{]*)\{{", 
+            regex::escape(function_name)
+        )).unwrap();
+        
+        if let Some(captures) = function_line_regex.captures(source_code) {
+            let modifiers_str = captures[1].to_string();
+            // Extract modifiers (words that are not visibility, state mutability, or returns)
+            let modifier_regex = Regex::new(r"\b(\w+)\b").unwrap();
+            let reserved_words = ["public", "private", "internal", "external", "view", "pure", "payable", "returns"];
+            
+            modifier_regex
+                .captures_iter(&modifiers_str)
+                .map(|cap| cap[1].to_string())
+                .filter(|word| !reserved_words.contains(&word.as_str()))
+                .collect()
+        } else {
+            Vec::new()
+        }
     }
 
     fn extract_state_variables(&self, source_code: &str) -> crate::Result<Vec<Variable>> {
