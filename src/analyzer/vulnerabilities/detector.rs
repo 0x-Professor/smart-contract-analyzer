@@ -77,17 +77,17 @@ impl VulnerabilityDetector {
         let mut vulnerabilities = Vec::new();
         
         for function in &contract.functions {
-            if function.source_code.contains(".call(") ||
-               function.source_code.contains(".send(") ||
-               function.source_code.contains(".transfer(") {
+            if function.body.contains(".call(") ||
+               function.body.contains(".send(") ||
+               function.body.contains(".transfer(") {
                 vulnerabilities.push(Vulnerability {
                     id: "SWC-107".to_string(),
                     title: "Reentrancy".to_string(),
                     description: format!("Potential reentrancy vulnerability in function '{}'", function.name),
                     severity: "High".to_string(),
                     category: "Security".to_string(),
-                    line_number: Some(function.line_number as usize),
-                    code_snippet: Some(function.source_code.clone()),
+                    line_number: None,
+                    code_snippet: Some(function.body.clone()),
                     recommendation: "Follow the checks-effects-interactions pattern. Update state before making external calls.".to_string(),
                     references: vec!["https://swcregistry.io/docs/SWC-107".to_string()],
                 });
