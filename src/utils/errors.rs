@@ -121,9 +121,15 @@ impl From<String> for SmartContractAnalyzerError {
     }
 }
 
-impl From<&str> for SmartContractAnalyzerError {
-    fn from(error: &str) -> Self {
-        SmartContractAnalyzerError::Custom(error.to_string())
+impl From<toml::ser::Error> for SmartContractAnalyzerError {
+    fn from(error: toml::ser::Error) -> Self {
+        SmartContractAnalyzerError::Toml(toml::de::Error::custom(error.to_string()))
+    }
+}
+
+impl From<std::num::ParseIntError> for SmartContractAnalyzerError {
+    fn from(error: std::num::ParseIntError) -> Self {
+        SmartContractAnalyzerError::Parse(format!("Integer parse error: {}", error))
     }
 }
 
