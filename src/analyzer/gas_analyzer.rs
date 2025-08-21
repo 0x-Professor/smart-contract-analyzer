@@ -48,7 +48,7 @@ pub struct OptimizationExample {
     pub savings_explanation: String,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct GasAnalysisReport {
     pub total_estimated_cost: u64,
     pub deployment_cost: u64,

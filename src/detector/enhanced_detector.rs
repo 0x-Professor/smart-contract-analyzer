@@ -13,6 +13,14 @@ pub enum VulnerabilitySeverity {
     Low,
 }
 
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct SecurityAnalysis {
+    pub vulnerabilities: Vec<Vulnerability>,
+    pub gas_issues: Vec<GasIssue>,
+    pub code_quality: Vec<CodeQualityIssue>,
+    pub risk_score: f32,
+}
+
 /// Enhanced comprehensive contract analysis
 pub struct EnhancedVulnerabilityDetector {
     patterns: HashMap<String, VulnerabilityPattern>,
@@ -43,12 +51,19 @@ pub struct DetectionContext {
     pub state_changes: Vec<String>,
 }
 
-#[derive(Debug, Clone)]
-pub struct SecurityAnalysis {
-    pub vulnerabilities: Vec<Vulnerability>,
-    pub gas_issues: Vec<GasIssue>,
-    pub code_quality: CodeQualityReport,
-    pub risk_score: u32,
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct CodeQualityIssue {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    pub severity: String,
+    pub recommendation: String,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct CodeQualityReport {
+    pub issues: Vec<CodeQualityIssue>,
+    pub score: u32,
 }
 
 #[derive(Debug, Clone)]
@@ -60,15 +75,6 @@ pub struct GasIssue {
     pub potential_savings: Option<u64>,
     pub line_number: Option<usize>,
     pub recommendation: String,
-}
-
-#[derive(Debug, Clone)]
-pub struct CodeQualityReport {
-    pub complexity_score: u32,
-    pub maintainability_index: f32,
-    pub test_coverage_estimate: f32,
-    pub documentation_score: u32,
-    pub best_practice_violations: Vec<String>,
 }
 
 static DETECTOR_INSTANCE: OnceLock<EnhancedVulnerabilityDetector> = OnceLock::new();
@@ -939,11 +945,16 @@ impl EnhancedVulnerabilityDetector {
         }
 
         Ok(CodeQualityReport {
-            complexity_score,
-            maintainability_index,
-            test_coverage_estimate,
-            documentation_score,
-            best_practice_violations,
+            issues: best_practice_violations.into_iter().map(|violation| CodeQualityIssue {
+                id: "QUALITY-001".to_string(),
+                title: "Best Practice Violation".to_string(),
+                description: violation,
+                severity: "Low".to_string(),
+                recommendation: "Follow Solidity best practices".to_string(),
+            }).collect(),
+            score: (complexity_score + documentation_score + 
+                   (maintainability_index * 10.0) as u32 + 
+                   (test_coverage_estimate * 10.0) as u32) / 4,
         })
     }
 
