@@ -210,7 +210,7 @@ impl EnhancedSolidityParser {
 
         // Pre-process the source code
         let cleaned_source = self.preprocess_source(source_code)?;
-        let lines_with_numbers: Vec<(usize, &str)> = cleaned_source.lines().collect();
+        let lines: Vec<&str> = cleaned_source.lines().collect();
 
         // Extract basic information
         let pragma_version = self.extract_pragma_version(&cleaned_source)?;
