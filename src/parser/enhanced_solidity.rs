@@ -320,9 +320,9 @@ impl EnhancedSolidityParser {
 
     fn extract_imports(&self, source_code: &str) -> Result<Vec<Import>> {
         let mut imports = Vec::new();
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
-        for (line_num, line) in &lines_with_numbers {
+        for (line_num, line) in lines.iter().enumerate() {
             if let Some(captures) = self.import_regex.captures(line) {
                 let path = captures.get(1)
                     .or_else(|| captures.get(2))
@@ -565,7 +565,7 @@ impl EnhancedSolidityParser {
 
     fn extract_special_functions(&self, source_code: &str) -> Result<Vec<EnhancedFunction>> {
         let mut functions = Vec::new();
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
         // Constructor functions
         for (line_num, line) in &lines {
@@ -706,9 +706,9 @@ impl EnhancedSolidityParser {
 
     fn extract_enhanced_state_variables(&self, source_code: &str) -> Result<Vec<EnhancedVariable>> {
         let mut variables = Vec::new();
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
-        for (line_num, line) in &lines_with_numbers {
+        for (line_num, line) in lines.iter().enumerate() {
             // Skip comments and empty lines
             let trimmed = line.trim();
             if trimmed.is_empty() || trimmed.starts_with("//") || trimmed.starts_with("/*") {
@@ -784,9 +784,9 @@ impl EnhancedSolidityParser {
 
     fn extract_events(&self, source_code: &str) -> Result<Vec<Event>> {
         let mut events = Vec::new();
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
-        for (line_num, line) in &lines_with_numbers {
+        for (line_num, line) in lines.iter().enumerate() {
             if let Some(captures) = self.event_regex.captures(line) {
                 let name = captures[1].to_string();
                 let params_str = captures.get(2).map_or("", |m| m.as_str());
@@ -807,9 +807,9 @@ impl EnhancedSolidityParser {
 
     fn extract_modifiers(&self, source_code: &str) -> Result<Vec<ModifierDefinition>> {
         let mut modifiers = Vec::new();
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
-        for (line_num, line) in &lines_with_numbers {
+        for (line_num, line) in lines.iter().enumerate() {
             if let Some(captures) = self.modifier_regex.captures(line) {
                 let name = captures[1].to_string();
                 let params_str = captures.get(2).map_or("", |m| m.as_str());
@@ -831,7 +831,7 @@ impl EnhancedSolidityParser {
 
     fn extract_structs(&self, source_code: &str) -> Result<Vec<StructDefinition>> {
         let mut structs = Vec::new();
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
         for (line_num, _) in lines {
             if let Some(captures) = self.struct_regex.captures(source_code) {
@@ -867,7 +867,7 @@ impl EnhancedSolidityParser {
 
     fn extract_enums(&self, source_code: &str) -> Result<Vec<EnumDefinition>> {
         let mut enums = Vec::new();
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
         for (line_num, _) in lines {
             if let Some(captures) = self.enum_regex.captures(source_code) {
@@ -894,9 +894,9 @@ impl EnhancedSolidityParser {
     fn extract_using_for(&self, source_code: &str) -> Result<Vec<UsingFor>> {
         let mut using_for = Vec::new();
         let using_regex = Regex::new(r"using\s+(\w+)\s+for\s+(\w+)\s*;")?;
-        let lines_with_numbers: Vec<(usize, &str)> = source_code.lines().enumerate().collect();
+        let lines: Vec<&str> = source_code.lines().collect();
 
-        for (line_num, line) in &lines_with_numbers {
+        for (line_num, line) in lines.iter().enumerate() {
             if let Some(captures) = using_regex.captures(line) {
                 using_for.push(UsingFor {
                     library: captures[1].to_string(),
