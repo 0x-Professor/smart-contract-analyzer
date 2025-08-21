@@ -13,12 +13,7 @@ pub enum VulnerabilitySeverity {
     Low,
 }
 
-    /// Analyze a contract for vulnerabilities (wrapper for enhanced analysis)
-    pub fn analyze_contract(&self, contract: &EnhancedContract) -> Result<SecurityAnalysis> {
-        self.analyze_enhanced_contract(contract)
-    }
-
-    /// Enhanced comprehensive contract analysis
+/// Enhanced comprehensive contract analysis
 pub struct EnhancedVulnerabilityDetector {
     patterns: HashMap<String, VulnerabilityPattern>,
     severity_weights: HashMap<String, u8>,
