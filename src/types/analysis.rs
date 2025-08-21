@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use crate::analyzer::reports::{ReportSummary, SecurityIssueSummary};
+use crate::types::vulnerability::Vulnerability;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AnalysisReport {

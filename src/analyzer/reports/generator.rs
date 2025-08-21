@@ -283,7 +283,7 @@ impl ReportGenerator {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ReportSummary {
     pub overall_score: u8,
     pub risk_level: String,
