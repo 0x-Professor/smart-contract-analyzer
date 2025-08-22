@@ -36,7 +36,7 @@ Thank you for your interest in contributing to the Smart Contract Analyzer! This
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/smart-contract-analyzer.git
+git clone https://github.com/0x-Professor/smart-contract-analyzer.git
 cd smart-contract-analyzer
 
 # Build the project
