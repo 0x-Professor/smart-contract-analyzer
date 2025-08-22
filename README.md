@@ -39,7 +39,7 @@ A comprehensive Ethereum smart contract analyzer built in Rust that provides sta
 
 ### Build from Source
 ```bash
-git clone <repository-url>
+git clone https://github.com/0x-Professor/smart-contract-analyzer.git
 cd smart-contract-analyzer
 cargo build --release
 ```
